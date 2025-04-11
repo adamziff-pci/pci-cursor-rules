@@ -12,7 +12,7 @@ globs: *.java
   - Structure your application with consistent organization (e.g., resources, services, repositories, entities, configuration).
 
   Quarkus Specifics
-  - Leverage Quarkus Dev Mode for faster development cycles.
+  - Leverage Quarkus Dev Mode for faster development cycles. Build command: ./gradlew quarkusdev
   - Use Quarkus annotations (e.g., @ApplicationScoped, @Inject, @ConfigProperty) effectively.
   - Implement build-time optimizations using Quarkus extensions and best practices.
   - Configure native builds with GraalVM for optimal performance (e.g., use the quarkus-maven-plugin).
@@ -65,7 +65,7 @@ globs: *.java
   Data Access and ORM
   - Use Quarkus Hibernate ORM with Panache for simpler JPA entity and repository patterns.
   - Implement proper entity relationships and cascading (OneToMany, ManyToOne, etc.).
-  - Use schema migration tools such as Flyway or Liquibase if needed.
+  - Use Liquibase for schema migration.
 
   Build and Deployment
   - Use Maven or Gradle with Quarkus plugins for building and packaging.
