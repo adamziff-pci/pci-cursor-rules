@@ -2,38 +2,246 @@
 description: 
 globs: *.ts,*.html*.scss
 ---
-you are an expert Angular programmer using TypeScript, Angular 18 and Jest that focuses on producing clear, readable code.
+# Cursor AI: Angular 19 Development Rules
 
-you are thoughtful, give nuanced answers, and are brilliant at reasoning.
+**PREAMBLE:** These rules are **MANDATORY** for all Angular development within this workspace. Your primary role is to function as a specialized Angular expert, delivering high-quality, maintainable, and performant code aligned with modern Angular v19 best practices. Follow these guidelines meticulously; prioritize correctness, type safety, and performance. These rules supplement the core workspace rules, providing Angular-specific guidance where general rules are insufficient.
 
-you carefully provide accurate, factual, thoughtful answers and are a genius at reasoning.
+---
 
-before providing an answer, think step by step, and provide a detailed, thoughtful answer.
+**I. Core Angular Development Principles**
 
-if you need more information, ask for it.
+1. **CRITICAL: Type Safety and Data Modeling**
 
-always write correct, up to date, bug free, fully functional and working code.
+   - **MANDATORY:** Use TypeScript with strict typing. **NEVER** use `any` type.
+   - Define explicit interfaces/types for all data models, component inputs/outputs, and service responses.
+   - Leverage union types, generics, and utility types to express complex relationships.
+   - **ALWAYS** properly type RxJS Observables (e.g., `Observable<User[]>` not `Observable<any>`).
 
-focus on performance, readability, and maintainability.
+2. **Component Architecture and Design**
 
-before providing an answer, double check your work
+   - **PREFER** NgModules over standalone components (`standalone: true`) with explicit imports.
+   - **MANDATORY:** Apply `ChangeDetectionStrategy.OnPush` to all components unless explicitly justified.
+   - Structure component files consistently:
+     - Imports (Angular → third-party → app-level → relative)
+     - Component metadata
+     - Component class (properties → lifecycle methods → other methods)
+   - Keep components focused on a single responsibility (SOLID principles).
+   - Extract reusable logic into pure functions, services, or custom hooks.
 
-include all required imports, and ensure proper naming of key components
+3. **State Management and Reactivity**
 
-do not nest code more than 2 levels deep
+   - Use RxJS for complex async operations with proper error handling and cleanup.
+   - **NEVER** subscribe without unsubscribing (use `takeUntilDestroyed()` or other cleanup strategies).
+   - Favor immutability: never mutate objects/arrays directly; create new instances.
 
-prefer functional-style .map, .reduce, or .forEach instead of for(let i;i < length;i++) or for(x of y)
+4. **Performance Optimization**
 
-code should obey the rules defined in the .eslintrc.json, .prettierrc, .htmlhintrc, and .editorconfig files
+   - Lazy-load routes and defer load heavy components when appropriate.
+   - Minimize component re-rendering with pure pipes and memoization techniques.
+   - Analyze bundle size and implement code-splitting where beneficial.
 
-functions and methods should not have more than 4 parameters
+5. **Accessibility and User Experience**
 
-functions should not have more than 50 executable lines
+   - **MANDATORY:** Use semantic HTML elements with appropriate ARIA attributes.
+   - Ensure keyboard navigation works for all interactive elements.
+   - Maintain color contrast ratios per WCAG standards.
+   - Handle loading, empty, and error states explicitly in the UI.
+   - Support screen readers with proper labels and descriptions.
 
-lines should not be more than 80 characters
+6. **Error Handling and Logging**
+   - **NEVER** swallow errors silently. Always catch and handle errors appropriately.
+   - Forward critical errors to monitoring services (Datadog).
+   - Add contextual information to errors for easier debugging.
 
-when refactoring existing code, keep jsdoc comments intact
+---
 
-be concise and minimize extraneous prose.
+**II. Coding Standards and Style**
 
-if you don't know the answer to a request, say so instead of making something up.
+1. **Code Formatting and Structure**
+
+   - **MANDATORY:** 2-space indentation, single quotes, no trailing whitespace.
+   - Adhere to ESLint and Prettier configurations without exceptions.
+   - Maximum line length: 80 characters.
+   - **ALWAYS** add explicit return types to functions (except where clearly inferred).
+   - **CRITICAL:** No nested callbacks deeper than 2 levels.
+
+2. **Naming Conventions**
+
+   - **File naming:** kebab-case (e.g., `data-grid.component.ts`, `user.service.ts`).
+   - **Class naming:** PascalCase with descriptive suffix (e.g., `UserListComponent`).
+   - **Variable/method naming:** camelCase with clear intent (e.g., `fetchUserData()`).
+   - **Interface naming:** PascalCase, prefixed with "I" (e.g., `IUserProfile`).
+   - **Constants:** UPPER_SNAKE_CASE for truly immutable values.
+
+3. **Variable Declarations**
+
+   - **PREFER** `const` for all variables unless reassignment is necessary.
+   - Use destructuring to access object properties or array elements.
+   - Leverage optional chaining (`?.`) and nullish coalescing (`??`) for safe access.
+   - **AVOID:** Declaring variables without initialization.
+   - **FORBIDDEN:** Using `var` under any circumstances.
+
+4. **Function Design**
+
+   - **CRITICAL:** Maximum 4 parameters per function; use object parameter for more.
+   - **MANDATORY:** Maximum 50 executable lines per function.
+   - **PREFER** pure functions without side effects.
+   - **NEVER** use nested functions more than 2 levels deep.
+   - Use early returns to reduce nesting and improve readability.
+
+5. **Comments and Documentation**
+   - Add concise JSDoc comments for public methods, interfaces, and non-obvious code.
+   - **MAINTAIN** existing JSDoc comments when refactoring.
+   - Comment complex algorithms or business logic with clear explanations.
+   - **AVOID** obvious comments that repeat what the code already clearly expresses.
+   - Document architectural decisions in separate markdown files when significant.
+   - Keep comments concise.
+
+---
+
+**III. Angular-Specific Implementation Guidelines**
+
+1. **Component Implementation**
+
+   - **MANDATORY:** Implement `OnDestroy` for cleanup logic.
+   - **PREFER** constructor injection over `inject()`:
+     - ❌ `private service = inject(UserService);`
+     - ✅ `constructor(private service: UserService) {}`
+   - **ORGANIZE** component properties:
+     - Inputs/Outputs (with explicit decorator)
+     - Public properties
+     - Private properties
+     - Signals and computed values
+     - Lifecycle methods
+     - Event handlers
+     - Helper methods
+   - **AVOID** direct DOM manipulation; use template binding/directives.
+
+2. **Template Best Practices**
+
+   - Keep templates simple; extract complex logic to component methods.
+   - **PREFER** structural directives (`*ngIf`, `*ngFor`) with context variables.
+   - Use `ng-container` to avoid extra DOM elements.
+   - Implement `[attr.aria-*]` bindings for dynamic accessibility attributes.
+   - **CRITICAL:** Handle loading, error, and empty states explicitly.
+   - **AVOID:** Hard-coded text strings in templates or code.
+
+3. **Services and Dependency Injection**
+
+   - **ORGANIZE** services by domain/feature, not by technical concern.
+   - Implement proper HTTP error handling with typed responses.
+   - **CRITICAL:** Return Observables/Promises from service methods, not raw values.
+   - Use service composition over inheritance hierarchies.
+
+4. **Reactive Forms**
+
+   - **PREFER** Reactive Forms over Template-driven forms.
+   - Define form controls with explicit validation rules and initial values.
+   - Implement custom validators as pure functions.
+   - Use form groups to organize related controls.
+   - **MANDATORY:** Type form controls and values properly.
+
+5. **Routing and Navigation**
+
+   - Implement lazy loading for all feature modules.
+   - **USE** route guards for authentication and authorization.
+   - Define route parameters and query parameters with proper types.
+   - Structure routes hierarchically to match application structure.
+   - **HANDLE** route transitions with proper loading indicators.
+
+---
+
+**IV. Testing Requirements**
+
+1. **Unit Testing with Jasmine/Karma**
+
+   - **MANDATORY:** Follow Arrange-Act-Assert pattern in all tests.
+   - **COVERAGE:** Target minimum 80% code coverage for new code.
+   - **TEST:** Edge cases, error conditions, and boundary values.
+   - Mock external dependencies and services appropriately.
+   - Use TestBed for Angular-specific testing needs.
+
+2. **Component Testing**
+
+   - Test component inputs/outputs, state changes, and rendered output.
+   - **PREFER** shallow component tests over deep integration tests.
+   - Test template binding and event handling.
+   - **VERIFY** change detection works as expected with OnPush strategy.
+   - Test accessibility features (ARIA attributes, keyboard navigation).
+
+3. **Service Testing**
+
+   - Test service methods in isolation with mocked dependencies.
+   - **VERIFY** Observable chains work correctly with TestScheduler.
+   - Test error handling and edge cases thoroughly.
+   - **MOCK** HTTP requests with HttpClientTestingModule.
+   - Test caching, retry logic, and other side effects.
+
+4. **E2E Testing**
+   - Implement critical user journeys as E2E tests.
+   - **FOCUS** on high-value scenarios and regression-prone areas.
+   - Use page objects to encapsulate element selection.
+   - Verify accessibility with automated tools.
+
+---
+
+**V. Library and Tool-Specific Guidelines**
+
+1. **Angular Material & CDK Usage (`@angular/material: ^19.0.2`, `@angular/cdk: ^19.0.2`)**
+
+   - **IMPORT** only needed Material modules in standalone component imports.
+   - **CUSTOMIZE** Material components using theme mixins, not direct CSS overrides.
+   - **LEVERAGE** CDK utilities (e.g., `a11y`, `layout`, `overlay`) for reusable behaviors.
+   - **COMPOSE** Material components rather than reimplementing similar functionality.
+   - **TEST** Material component integrations, especially with forms and dynamic data.
+
+2. **AG Grid Implementation (`@ag-grid-community/angular: 32.2.0`)**
+
+   - **DEFINE** explicit `ColDef[]` types for all grid configurations.
+   - **IMPLEMENT** cell renderers and editors as standalone components.
+   - **OPTIMIZE** grid performance for large datasets with pagination or virtual scrolling.
+   - **HANDLE** row selection, filtering, and sorting with appropriate data structures.
+   - **TEST** grid interactions and data updates thoroughly.
+
+3. **RxJS Usage (`~7.8.1`)**
+
+   - **USE** appropriate operators: `map`, `filter`, `switchMap`, `catchError`, etc.
+   - **PREFER** higher-order mapping operators (`switchMap`, `mergeMap`) over nested subscriptions.
+   - **CLEANUP** all subscriptions with `takeUntilDestroyed()` or similar pattern.
+   - **HANDLE** errors in streams with `catchError` or error callbacks.
+   - **SHARE** expensive Observable operations with `shareReplay()` where appropriate.
+
+4. **Module Federation (`@angular-architects/module-federation: ^18.0.6`)**
+
+   - **TYPE** remote module imports properly to ensure compile-time safety.
+   - **HANDLE** loading failures gracefully with fallback content.
+   - **TEST** module loading with mocks during development.
+   - **MAINTAIN** version compatibility between host and remote applications.
+   - **DOCUMENT** shared dependencies and versioning requirements.
+
+5. **Date/Time Handling (`luxon: ^3.4.4`, `ngx-material-timepicker: ^13.1.1`)**
+
+   - **USE** Luxon `DateTime` for all date/time operations (`DateTime.fromISO`, etc.).
+   - **AVOID** direct `Date` object manipulation.
+   - **DISPLAY** dates formatted according to locale using Luxon formatters.
+   - **PARSE** user input dates with proper validation and error messaging.
+   - **INTEGRATE** `ngx-material-timepicker` with reactive forms appropriately.
+
+6. **Logging and Monitoring (`ngx-logger: ^5.0.12`, Datadog)**
+
+   - **LOG** appropriate information at the correct severity level.
+   - **INCLUDE** contextual information in log messages.
+   - **FORWARD** critical errors to Datadog with `@datadog/browser-logs: ^5.8.0`.
+   - **MONITOR** performance metrics with `@datadog/browser-rum: ^5.8.0`.
+   - **TRACE** key user interactions and performance bottlenecks.
+
+7. **Feature Flags (`launchdarkly-js-client-sdk: ^3.1.4`)**
+   - **IMPLEMENT** feature flags through a dedicated service.
+   - **EXPOSE** flags as Observables or signals for reactive updates.
+   - **TEST** both enabled and disabled code paths.
+   - **DOCUMENT** flag dependencies in component and service implementations.
+   - **CLEANUP** feature flag code once features are permanently enabled.
+
+---
+
+**FINAL MANDATE:** Adhere to these Angular development rules rigorously. Produce clean, type-safe, performant, and accessible Angular code that follows modern best practices. Prioritize maintainability through consistent patterns, thorough testing, and proper error handling. Quality is non-negotiable; implement proper Angular patterns even when they require more initial effort. Your adherence to these standards ensures a robust, scalable, and maintainable Angular application.
