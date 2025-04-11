@@ -91,7 +91,8 @@ globs: *
     *   All commits **MUST** be proposed using `git commit` with one or more `-m` flags. Each logical part (header, body paragraph, footer line/token) **MUST** use a separate `-m`.
     *   **Forbidden:** `git commit` without `-m`, `\n` within a single `-m`.
 
-2.  **Header Structure:** `<type>(<scope>): <description>`
+2.  **Header Structure:** `<ticket-id> <type>(<scope>): <description>`
+    *   **`ticket-id`:** Mandatory. Extracted from branch name (e.g., `TYEM-1234` from `feature/TYEM-1234`).
     *   **`type`:** Mandatory (See III.3).
     *   **`scope`:** Optional (requires parentheses). Area of codebase.
     *   **`description`:** Mandatory. Concise summary, imperative mood, lowercase start, no period. Max ~50 chars.
@@ -106,9 +107,9 @@ globs: *
     *   Issue References: `Refs: #123`, `Closes: #456`, `Fixes: #789`.
 
 6.  **Examples:**
-    *   `git commit -m "fix(auth): correct password reset"`
-    *   `git commit -m "feat(ui): implement dark mode" -m "Adds theme toggle." -m "Refs: #42"`
-    *   `git commit -m "refactor(api): change user ID format" -m "BREAKING CHANGE: User IDs are now UUID strings."`
+    *   `git commit -m "TYEM-1234 fix(auth): correct password reset"`
+    *   `git commit -m "TYEM-5678 feat(ui): implement dark mode" -m "Adds theme toggle." -m "Refs: #42"`
+    *   `git commit -m "TYEM-9012 refactor(api): change user ID format" -m "BREAKING CHANGE: User IDs are now UUID strings."` 
 
 7.  **Proactive Commit Preparation Workflow:**
     *   **Trigger:** When user asks to commit/save work.
@@ -120,7 +121,7 @@ globs: *
 
 8.  **Git Execution Permission:**
     *   You **MAY** execute `git add <files...>` or the full `git commit -m "..." ...` sequence **IF AND ONLY IF** the user *explicitly instructs you* to run that *specific command sequence* in the **current prompt** (typically following step III.7).
-    *   Other Git commands (`push`, `tag`, `rebase`, etc.) **MUST NOT** be run without explicit instruction and confirmation.
+    *   Other Git commands (`push`, `tag`, `rebase`, etc.) **MUST NOT** be run without explicit instruction and confirmation..
 
 ---
 
