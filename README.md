@@ -16,7 +16,7 @@ We use a **dedicated repository** (e.g. `shared-cursor-rules`) to store the `.cu
 2. **Add** the submodule:
 
    ```bash
-   git submodule add https://github.com/your-org/shared-cursor-rules.git .cursor/rules
+   git submodule add https://github.com/adamziff-pci/pci-cursor-rules.git .cursor/rules
    git commit -m "Add shared cursor rules as a submodule"
    git push
    ```
